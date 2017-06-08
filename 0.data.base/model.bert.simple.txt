@@ -1,0 +1,19 @@
+model{
+
+for(f in 1:n.fish){
+
+  length[f] ~ dlnorm(mu.log.length, tau.log.length)
+  
+  mu.log.length <- log(mu.length) - pow(sd.log.length, 2) / 2
+
+  mu.length <- l.inf * exp(-k(age[f] - t0))
+
+}
+
+l.inf ~ dnorm(100, 1 / (20 * 20))
+
+k ~ dunif()
+
+t0 ~ dunif()
+
+}

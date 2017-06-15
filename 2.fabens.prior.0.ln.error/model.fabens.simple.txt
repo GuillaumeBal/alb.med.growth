@@ -1,0 +1,43 @@
+model{
+
+# model specification ======================================================
+
+for(f in 1:n.fish){
+
+  length[f] ~ dlnorm(mu.log.length[f], tau.log.length)
+
+  mu.log.length[f] <- log(mu.length[f]) - pow(sd.log.length, 2) / 2
+
+  mu.length[f] <- l0 + (l.inf - l0) * (1 - exp(- k * age[f]))
+  
+}
+
+l0 ~ dnorm(mu.l0, tau.l0)
+tau.l0 <- 1 / pow(mu.l0 * cv.l0 , 2)
+
+
+# model priors ======================================================
+
+l.inf ~ dnorm(100, 1 / (20 * 20))
+
+k ~ dunif(0.1, 1)
+
+t0 ~ dunif(-3, 0)
+
+tau.log.length <- 1 / pow(sd.log.length, 2)
+
+sd.log.length ~ dunif(0.01, .5)
+
+# pred ===============================================================
+
+for(a in 1:n.ages.pred){
+
+  length.pred[a] ~ dlnorm(mu.log.length.pred[a], tau.log.length)
+  
+  mu.log.length.pred[a] <- log(mu.length.pred[a]) - pow(sd.log.length, 2) / 2
+
+  mu.length.pred[a] <- l0 + (l.inf - l0) * (1 - exp(- k * ages.pred[a]))
+
+}
+
+}
